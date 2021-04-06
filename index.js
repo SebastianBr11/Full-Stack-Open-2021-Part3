@@ -46,10 +46,32 @@ const generateId = () => {
 }
 
 app.post('/api/persons', (req, res) => {
-  const person = req.body
-  person.id = generateId()
+  const body = req.body
 
-  console.log(person)
+  if (!body.name) {
+    return res.status(400).json({
+      error: 'name missing',
+    })
+  }
+
+  if (!body.number) {
+    return res.status(400).json({
+      error: 'number missing',
+    })
+  }
+
+  if (persons.some(person => person.name === body.name)) {
+    return res.status(400).json({
+      error: 'name already in phonebook',
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  }
+
   persons = persons.concat(person)
 
   res.json(person)
