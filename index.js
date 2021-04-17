@@ -47,14 +47,18 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
+  Person.findById(req.params.id).then(person => {
     res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  })
+
+  // const id = Number(req.params.id)
+  // const person = persons.find(person => person.id === id)
+
+  // if (person) {
+  //   res.json(person)
+  // } else {
+  //   res.status(404).end()
+  // }
 })
 
 const generateId = () => {
@@ -65,32 +69,51 @@ app.post('/api/persons', (req, res) => {
   const body = req.body
 
   if (!body.name) {
-    return res.status(400).json({
-      error: 'name missing',
-    })
+    return res.status(400).json({ error: 'name missing' })
   }
 
   if (!body.number) {
-    return res.status(400).json({
-      error: 'number missing',
-    })
+    return res.status(400).json({ error: 'number missing' })
   }
 
-  if (persons.some(person => person.name === body.name)) {
-    return res.status(400).json({
-      error: 'name already in phonebook',
-    })
-  }
-
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId(),
-  }
+    number: body.name,
+  })
 
-  persons = persons.concat(person)
+  person.save().then(savedPerson => {
+    res.json(savedPerson)
+  })
 
-  res.json(person)
+  // const body = req.body
+
+  // if (!body.name) {
+  //   return res.status(400).json({
+  //     error: 'name missing',
+  //   })
+  // }
+
+  // if (!body.number) {
+  //   return res.status(400).json({
+  //     error: 'number missing',
+  //   })
+  // }
+
+  // if (persons.some(person => person.name === body.name)) {
+  //   return res.status(400).json({
+  //     error: 'name already in phonebook',
+  //   })
+  // }
+
+  // const person = {
+  //   name: body.name,
+  //   number: body.number,
+  //   id: generateId(),
+  // }
+
+  // persons = persons.concat(person)
+
+  // res.json(person)
 })
 
 app.delete('/api/persons/:id', (req, res) => {
