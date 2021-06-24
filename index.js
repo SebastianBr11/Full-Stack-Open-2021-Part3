@@ -64,7 +64,10 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  Person.findByIdAndUpdate(req.params.id, person, {
+    new: true,
+    runValidators: true,
+  })
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
@@ -76,7 +79,7 @@ app.post('/api/persons', (req, res, next) => {
 
   const person = new Person({
     name: body.name,
-    number: body.name,
+    number: body.number,
   })
 
   person
