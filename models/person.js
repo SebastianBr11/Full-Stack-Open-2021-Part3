@@ -12,7 +12,7 @@ mongoose
     useFindAndModify: false,
     useCreateIndex: true,
   })
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
@@ -32,6 +32,8 @@ const personSchema = new mongoose.Schema({
     required: true,
   },
 })
+
+personSchema.plugin(uniqueValidator)
 
 personSchema.set('toJSON', {
   transform: (document, returnedObject) => {

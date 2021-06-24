@@ -37,7 +37,7 @@ app.put('/api/persons/:id', (req, res, next) => {
   const body = req.body
 
   const person = {
-    name: body.name,
+    // name: body.name, -- Having this results in error: 'Validation failed: name: Cannot read property 'ownerDocument' of null'
     number: body.number,
   }
 
@@ -70,7 +70,7 @@ app.post('/api/persons', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => next(error))
