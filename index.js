@@ -74,14 +74,6 @@ app.put('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
-  if (!body.name) {
-    return res.status(400).json({ error: 'name missing' })
-  }
-
-  if (!body.number) {
-    return res.status(400).json({ error: 'number missing' })
-  }
-
   const person = new Person({
     name: body.name,
     number: body.name,
@@ -90,6 +82,7 @@ app.post('/api/persons', (req, res, next) => {
   person
     .save()
     .then(savedPerson => {
+      console.log('new person', savedPerson)
       res.json(savedPerson)
     })
     .catch(error => next(error))
@@ -117,6 +110,12 @@ app.get('/info', (req, res, next) => {
 
 const errorHandler = (error, req, res, next) => {
   console.error(error.message)
+
+  if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message })
+  } else if (error.name === 'MongoError' && error.code === 11000) {
+    return res.status(403).json({ error: error.message })
+  }
 
   next(error)
 }
