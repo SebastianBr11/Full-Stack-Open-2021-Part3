@@ -87,9 +87,7 @@ app.delete('/api/persons/:id', (req, res) => {
     .then(result => {
       res.status(204).end()
     })
-    .catch(error => {
-      console.error(error.message)
-    })
+    .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
@@ -99,6 +97,14 @@ app.get('/info', (req, res) => {
     } people</p><div>${new Date()}</div>`,
   )
 })
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
